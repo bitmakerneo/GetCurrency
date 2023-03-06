@@ -1,3 +1,3 @@
-del /F/S *.DCU *.DDP *.DSK *.IDENTCACHE *.LOCAL *.EXE
+del /F/S *.DCU *.DDP *.DSK *.IDENTCACHE *.LOCAL *.STAT *.EXE
 
 pause

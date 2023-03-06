@@ -1,10 +1,6 @@
 # GetCurrency
 Downloading the official exchange rates of the National Bank of the Republic of Belarus.
 
-![001](/res/001.png)
-![002](/res/002.png)
-![003](/res/003.png)
-
 ## Requirements
 Database: **Oracle 11g Enterprise Edition**
 Compiler: **Delphi 10.3.1**
@@ -24,7 +20,7 @@ You can change the username. By default is `test`.
 >CREATE OR REPLACE DIRECTORY RATES_DIR AS '`x:\path\to\program`';
 
 ## How to setup ConnectionUrl
-Edit parameter _ConnectionUrl_ in the file  _bin\GetCurrency.ini_
+Edit the `ConnectionUrl` parameter in the `bin\GetCurrency.ini` file.
 For example: 
 ```
 [MAIN]
@@ -36,3 +32,8 @@ Run file _bin\install.cmd_
 
 ## How to uninstall service
 Run file _bin\uninstall.cmd_
+
+## Screenshots
+![001](/res/001.png)
+![002](/res/002.png)
+![003](/res/003.png)

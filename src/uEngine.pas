@@ -100,6 +100,7 @@ begin
   aDate := cNullDate;
   aQuery := TOraQuery.Create(nil{aOwner});
   try
+    aQuery.Session := aSession;
     aQuery.SQL.Text := 'SELECT CREATE_DATE FROM CURS_XML_NOW';
     aQuery.Execute;
     if not aQuery.EOF then

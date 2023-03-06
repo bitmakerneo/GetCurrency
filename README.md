@@ -18,7 +18,7 @@ You can change the username. By default is `test`.
 >CREATE OR REPLACE DIRECTORY RATES_DIR AS '`x:\path\to\program`';
 
 ## How to setup ConnectionUrl
-Edit the `ConnectionUrl` parameter in the `bin\GetCurrency.ini` file.\
+Edit the `ConnectionUrl` parameter in the `bin\GetNBRBCurrencyService.ini` and `bin\GetCurrency.ini` files.\
 For example: 
 ```
 [MAIN]

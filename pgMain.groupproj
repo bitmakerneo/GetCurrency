@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{9EACF23E-0159-4536-9CD6-71249147B52B}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="service\GetNBRBCurrencyService.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="test\TestGetCurrency.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="GetNBRBCurrencyService">
+        <MSBuild Projects="service\GetNBRBCurrencyService.dproj"/>
+    </Target>
+    <Target Name="GetNBRBCurrencyService:Clean">
+        <MSBuild Projects="service\GetNBRBCurrencyService.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="GetNBRBCurrencyService:Make">
+        <MSBuild Projects="service\GetNBRBCurrencyService.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="TestGetCurrency">
+        <MSBuild Projects="test\TestGetCurrency.dproj"/>
+    </Target>
+    <Target Name="TestGetCurrency:Clean">
+        <MSBuild Projects="test\TestGetCurrency.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="TestGetCurrency:Make">
+        <MSBuild Projects="test\TestGetCurrency.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="GetNBRBCurrencyService;TestGetCurrency"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="GetNBRBCurrencyService:Clean;TestGetCurrency:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="GetNBRBCurrencyService:Make;TestGetCurrency:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

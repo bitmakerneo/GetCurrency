@@ -95,17 +95,25 @@ var
   aDate: TDateTime;
   aQuery: TOraQuery;
 begin
-  AddLog('CheckAvailabilityOfExchangeRates...');
+  AddLog('CheckAvailabilityOfExchangeRates... Start');
 
   aDate := cNullDate;
   aQuery := TOraQuery.Create(nil{aOwner});
   try
     aQuery.Session := aSession;
     aQuery.SQL.Text := 'SELECT CREATE_DATE FROM CURS_XML_NOW';
-    aQuery.Execute;
+    try
+      aQuery.Execute;
+    except
+      on E:Exception do
+      begin
+        AddLog('Message: %s', [E.Message]);
+      end;
+    end;
     if not aQuery.EOF then
     begin
       aDate := aQuery.FieldByName('CREATE_DATE').Value;
+      AddLog('Found date: %s', [FormatDateTime('YYYY-MM-DD', aDate)]);
       Result := aDate < Trunc(Now);
     end
     else
@@ -115,7 +123,9 @@ begin
   end;
 
   if Result and (aDate <> cNullDate) then
+  begin
     ExecuteSQL(aSession, 'DELETE FROM CURS_XML_NOW');
+  end;
 
   AddLog('CheckAvailabilityOfExchangeRates... %s', [BoolToStr(Result, True{aUseBoolStrs})]);
 end;
@@ -189,26 +199,33 @@ function GetNewCurrencies: Boolean;
 var
   aSession: TOraSession;
 begin
+  AddLog('GetNewCurrencies... Start');
   Result := False;
 
   aSession := TOraSession.Create(nil{aOwner});
   try
     aSession.Options.Direct := True;
     aSession.ConnectString := GetConnectionUrl;
+    AddLog('GetConnectionUrl: %s', [GetConnectionUrl]);
     try
+      AddLog('Session.Connect... Start');
       aSession.Connect;
       if aSession.Connected then
       begin
-        aSession.ClearStatementCache;
+        AddLog('Session.Connect... OK');
 
         if CheckAvailabilityOfExchangeRates(aSession) then
         begin
           Result := True;
           DoWork(aSession);
           aSession.Commit;
+          AddLog('Session.Commit');
         end
         else
+        begin
+          AddLog('Session.Rollback');
           aSession.Rollback;
+        end;
         aSession.Disconnect;
       end;
     except
@@ -216,6 +233,8 @@ begin
   finally
     FreeAndNil({var}aSession);
   end;
+
+  AddLog('GetNewCurrencies... %s', [BoolToStr(Result, True{aUseBoolStrs})]);
 end;
 
 end.

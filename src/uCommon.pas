@@ -15,7 +15,7 @@ function GetRatesFileName: string;
 implementation
 
 uses
-  SysUtils, IniFiles;
+  Windows, SysUtils, IniFiles;
 
 var
   gModuleFileName: string = '';
@@ -24,6 +24,7 @@ var
   gConnectionUrl: string = '';
   gOptionsFileName: string = '';
   gRatesFileName: string = '';
+  aCriticalSection: TRTLCriticalSection;
 
 function GetWorkPath: string;
 begin
@@ -59,17 +60,23 @@ procedure AddLog(const aMessage: string);
 var
   F: TextFile;
 begin
-  Assign({var}F, gLogFileName);
-
-  if FileExists(gLogFileName) then
-    Append({var}F)
-  else
-    Rewrite({var}F);
-
+  EnterCriticalSection({var}aCriticalSection);
   try
-    Writeln({var}F, FormatDateTime('YYYY-MM-DD hh:mm:ss.zzz', SysUtils.Now) + ':  ' + aMessage);
+    Assign({var}F, gLogFileName);
+
+    if FileExists(gLogFileName) then
+      Append({var}F)
+    else
+      Rewrite({var}F);
+
+    try
+      Writeln({var}F, FormatDateTime('YYYY-MM-DD hh:mm:ss.zzz', SysUtils.Now) + ':  ' + aMessage);
+      Flush({var}F);
+    finally
+      Close({var}F);
+    end;
   finally
-    Close({var}F);
+    LeaveCriticalSection(aCriticalSection);
   end;
 end;
 
@@ -99,9 +106,19 @@ begin
 
   if gRatesFileName = '' then
     gRatesFileName := gRatesFileName + cRatesFileName;
+
+  InitializeCriticalSection(aCriticalSection);
+end;
+
+procedure Done;
+begin
+ DeleteCriticalSection(aCriticalSection);
 end;
 
 initialization
   Init;
+
+finalization
+  Done;
 
 end.
